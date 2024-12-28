@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
     console.log(`const page = ${page}`); // LOG
 
     const pageSize = 30;
-    const searchQuery = req.query.search || '';
+    const searchQuery = req.query.search?.trim() || '';
     try {
         const url = 'https://api.steampowered.com/ISteamApps/GetAppList/v2/';
         const response = await axios.get(url);
@@ -55,8 +55,9 @@ app.get("/", async (req, res) => {
             games: paginatedGames,
             currentPage: page,
             totalPages: allPages,
-            searchQuery: searchQuery
+            searchQuery: searchQuery || null
         });
+        
     } catch (error) {
         console.error(error);
         res.send('Error fetching game list');
@@ -65,7 +66,7 @@ app.get("/", async (req, res) => {
 
 app.get('/game/:id', async (req, res) => {
     const appId = req.params.id;
-    const searchQuery = req.query.search || '';
+    const searchQuery = req.query.search?.trim() || '';
 
     try {
         const url = `https://store.steampowered.com/api/appdetails?appids=${appId}`;
@@ -90,10 +91,10 @@ app.get('/game/:id', async (req, res) => {
             description: data.short_description || null,
             price: data.is_free ? 'Free' : (data.price_overview ?.final_formatted || null),
             release_date: data.release_date ?.date || null,
-            platforms: data.platforms ? Object.keys(data.platforms).filter(p => data.platforms[p]) : null,
+            platforms: data.platforms ? Object.keys(data.platforms).filter(p => data.platforms[p]).map(platform => platform.charAt(0).toUpperCase() + platform.slice(1)) : null,
             publisher: data.publishers ? data.publishers.join(', ') : null,
             developer: data.developers ? data.developers.join(', ') : null,
-            screenshots: data.screenshots ? data.screenshots.map(s => s.path_full) : null,
+            screenshots: data.screenshots ? data.screenshots.map(s => s.path_full) : [],
             videos: videos,
             searchQuery: searchQuery,
         });

@@ -1,42 +1,57 @@
 <%- include('partials/header.ejs') %>
-
 <%- include('partials/navbar.ejs') %>
 
-<div class="games">
-    <% games.forEach(game => { %>
-        <div class="game">
-            <a href="/game/<%= game.appid %>">
-                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= game.appid %>/header.jpg" alt="<%= game.name %>"
-                     onerror="this.src='https://via.placeholder.com/200x150?text=No+Image';">
-                <p><%= game.name %></p>
-            </a>
+<div class="container-fluid mt-4 mb-2">
+    <div class="row row-cols-1 row-cols-md-5 row-cols-sm-3 g-4">
+        <% games.forEach(game => { %>
+        <div class="col d-flex justify-content-center">
+            <div class="card" style="width: 18rem;">
+                <div class="game">
+                    <a href="/game/<%= game.appid %>">
+                        <img class="card-img-top"
+                            src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= game.appid %>/header.jpg"
+                            alt="<%= game.name %>"
+                            onerror="this.src='https://via.placeholder.com/200x150?text=No+Image';">
+                    </a>
+                    <div class="card-body">
+                        <p class="card-text fw-bold text-center"><%= game.name %></p>
+                       <hr>
+                       <p class="card-text text-center fw-bold">$1000</p>
+                    </div>
+
+                </div>
+            </div>
         </div>
-    <% }) %>
+        <% }) %>
+    </div>
 </div>
 
-
-  <div class="pagination">
+<div class="pagination justify-content-center my-5">
     <% if (currentPage > 1) { %>
-      <a href="/?page=<%= currentPage - 1 %>&search=<%= searchQuery %>"> &lt; </a>  <!-- Previous button -->
+    <a class="btn btn-primary mx-1"
+        href="/?page=<%= currentPage - 1 %><%= searchQuery ? '&search=' + searchQuery : '' %>">&lt;</a>
     <% } %>
 
     <% if (currentPage > 3) { %>
-      <a href="/?page=1&search=<%= searchQuery %>">1</a>
-      <span>...</span>
+    <a class="btn btn-primary mx-1" href="/?page=1<%= searchQuery ? '&search=' + searchQuery : '' %>">1</a>
+    <span>...</span>
     <% } %>
 
     <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
-      <a href="/?page=<%= i %>&search=<%= searchQuery %>" <%= currentPage === i ? 'style="font-weight: bold;"' : '' %>><%= i %></a>
+    <a class="btn btn-primary mx-1" href="/?page=<%= i %><%= searchQuery ? '&search=' + searchQuery : '' %>"
+        class="<%= currentPage === i ? 'active-page' : '' %>"><%= i %></a>
     <% } %>
 
     <% if (currentPage < totalPages - 2) { %>
-      <span>...</span>
-      <a href="/?page=<%= totalPages %>&search=<%= searchQuery %>"><%= totalPages %></a>
+    <span>...</span>
+    <a class="btn btn-primary mx-1"
+        href="/?page=<%= totalPages %><%= searchQuery ? '&search=' + searchQuery : '' %>"><%= totalPages %></a>
     <% } %>
 
     <% if (currentPage < totalPages) { %>
-      <a href="/?page=<%= currentPage + 1 %>&search=<%= searchQuery %>"> &gt; </a>  <!-- Next button -->
+    <a class="btn btn-primary mx-1"
+        href="/?page=<%= currentPage + 1 %><%= searchQuery ? '&search=' + searchQuery : '' %>">&gt;</a>
     <% } %>
-  </div>
+</div>
 
-    <%- include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

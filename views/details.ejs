@@ -25,10 +25,15 @@
   <!-- Screenshots -->
   <h2>Screenshots</h2>
   <div class="screenshots">
+    <% if (screenshots && screenshots.length > 0) { %>
     <% screenshots.forEach(screenshot => { %>
     <img src="<%= screenshot %>" alt="Screenshot" width="300">
     <% }) %>
+    <% } else { %>
+    <p>No screenshots available for this game.</p>
+    <% } %>
   </div>
+
   <div>
     <% if (videos.length > 0) { %>
     <% videos.forEach(video => { %>
