@@ -1,0 +1,55 @@
+<%- include('partials/header.ejs') %>
+
+<%- include('partials/navbar.ejs') %>
+
+<div class="container">
+  <!-- Cover Photo
+  <div class="cover"
+    style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/<%= appid %>/header.jpg');">
+  </div> -->
+
+  <!-- Game Details -->
+  <h1><%= name %></h1>
+  <div class="info">
+    <p><strong>Genre:</strong> <%= genre %></p>
+    <p><strong>Description:</strong> <%= description %></p>
+    <p><strong>Price:</strong> <%= price %></p>
+    <p><strong>Release Date:</strong> <%= release_date %></p>
+    <p><strong>Supported Platforms:</strong> <%= platforms.join(', ') %></p>
+    <p><strong>Publisher:</strong> <%= publisher %></p>
+    <p><strong>Developer:</strong> <%= developer %></p>
+    <p><strong>App ID:</strong> <%= appid %></p>
+
+  </div>
+
+  <!-- Screenshots -->
+  <h2>Screenshots</h2>
+  <div class="screenshots">
+    <% screenshots.forEach(screenshot => { %>
+    <img src="<%= screenshot %>" alt="Screenshot" width="300">
+    <% }) %>
+  </div>
+  <div>
+    <% if (videos.length > 0) { %>
+    <% videos.forEach(video => { %>
+    <div class="video">
+      <% if (video.webm) { %>
+      <video controls>
+        <source src="<%= video.webm %>" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+      <% } else { %>
+      <video controls>
+        <source src="<%= video.mp4 %>" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <% } %>
+    </div>
+    <% }) %>
+    <% } else { %>
+    <p>No videos available for this game.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer.ejs') %>

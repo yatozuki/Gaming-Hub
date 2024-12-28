@@ -1,11 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gaming Hub</title>
-</head>
-<body>
-    <h1>Hello</h1>
-</body>
-</html>
+<%- include('partials/header.ejs') %>
+
+<%- include('partials/navbar.ejs') %>
+
+<div class="games">
+    <% games.forEach(game => { %>
+        <div class="game">
+            <a href="/game/<%= game.appid %>">
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= game.appid %>/header.jpg" alt="<%= game.name %>"
+                     onerror="this.src='https://via.placeholder.com/200x150?text=No+Image';">
+                <p><%= game.name %></p>
+            </a>
+        </div>
+    <% }) %>
+</div>
+
+
+  <div class="pagination">
+    <% if (currentPage > 1) { %>
+      <a href="/?page=<%= currentPage - 1 %>&search=<%= searchQuery %>"> &lt; </a>  <!-- Previous button -->
+    <% } %>
+
+    <% if (currentPage > 3) { %>
+      <a href="/?page=1&search=<%= searchQuery %>">1</a>
+      <span>...</span>
+    <% } %>
+
+    <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+      <a href="/?page=<%= i %>&search=<%= searchQuery %>" <%= currentPage === i ? 'style="font-weight: bold;"' : '' %>><%= i %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages - 2) { %>
+      <span>...</span>
+      <a href="/?page=<%= totalPages %>&search=<%= searchQuery %>"><%= totalPages %></a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/?page=<%= currentPage + 1 %>&search=<%= searchQuery %>"> &gt; </a>  <!-- Next button -->
+    <% } %>
+  </div>
+
+    <%- include('partials/footer.ejs') %>
