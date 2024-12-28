@@ -5,22 +5,24 @@
     <div class="row row-cols-1 row-cols-md-5 row-cols-sm-3 g-4">
         <% games.forEach(game => { %>
         <div class="col d-flex justify-content-center">
-            <div class="card" style="width: 18rem;">
-                <div class="game">
-                    <a href="/game/<%= game.appid %>">
+            <a href="/game/<%= game.appid %>" class="text-decoration-none">
+                <div class="card my-auto" style="width: 20rem;">
+                    <div class="game">
+
                         <img class="card-img-top"
                             src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= game.appid %>/header.jpg"
                             alt="<%= game.name %>"
                             onerror="this.src='https://via.placeholder.com/200x150?text=No+Image';">
-                    </a>
-                    <div class="card-body">
-                        <p class="card-text fw-bold text-center"><%= game.name %></p>
-                       <hr>
-                       <p class="card-text text-center fw-bold">$1000</p>
-                    </div>
 
+                        <div class="card-body">
+                            <p class="card-text fw-bold text-center"><%= game.name %></p>
+                            <hr>
+                            <p class="card-text text-center fw-bold"><%= game.price %></p>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <% }) %>
     </div>

@@ -1,3 +1,6 @@
+# Storage
+data/gameDetails.json
+
 # Logs
 logs
 *.log
