@@ -4,13 +4,12 @@ import axios from 'axios';
 import path from 'node:path';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import fs from 'fs/promises'; // Using fs.promises for async file operations
+import fs from 'fs/promises';
 import compression from 'compression';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, 'data/games.json');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
@@ -18,6 +17,10 @@ app.set('views', path.join(__dirname, '/views'));
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression()); // Enable Gzip compression
+
+
+const DATA_FILE = path.join(__dirname, 'data/games.json');
+const PRICES_CACHE_FILE = path.join(__dirname, 'data/prices.json');
 
 const loadGameData = async () => {
     try {
@@ -31,6 +34,64 @@ const loadGameData = async () => {
 const saveGameData = async (data) => {
     await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
 };
+
+
+// Load price cache
+const loadPriceCache = async () => {
+    try {
+        const data = await fs.readFile(PRICES_CACHE_FILE, 'utf-8');
+        return JSON.parse(data);
+    } catch {
+        return {};
+    }
+};
+
+// Save price cache
+const savePriceCache = async (data) => {
+    await fs.writeFile(PRICES_CACHE_FILE, JSON.stringify(data, null, 2), 'utf-8');
+};
+
+// Fetch prices for a batch of games
+const fetchPricesForGames = async (games) => {
+    const priceCache = await loadPriceCache();
+    const currentTime = Date.now();
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+    const gamesToFetch = games.filter(game => {
+        const cachedData = priceCache[game.appid];
+        return !cachedData || (currentTime - cachedData.timestamp) > CACHE_DURATION;
+    });
+
+    // Fetch prices in batches to avoid overwhelming the API
+    const BATCH_SIZE = 10;
+    for (let i = 0; i < gamesToFetch.length; i += BATCH_SIZE) {
+        const batch = gamesToFetch.slice(i, i + BATCH_SIZE);
+        
+        await Promise.all(batch.map(async (game) => {
+            try {
+                const url = `https://store.steampowered.com/api/appdetails?appids=${game.appid}&filters=price_overview`;
+                const response = await axios.get(url);
+                
+                if (response.data[game.appid]?.success) {
+                    const priceData = response.data[game.appid].data?.price_overview;
+                    priceCache[game.appid] = {
+                        price: priceData ? priceData.final_formatted : 'Free',
+                        timestamp: currentTime
+                    };
+                }
+            } catch (error) {
+                console.error(`Error fetching price for game ${game.appid}:`, error.message);
+            }
+        }));
+
+        // Add a small delay between batches to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    await savePriceCache(priceCache);
+    return priceCache;
+};
+
 
 app.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -59,14 +120,18 @@ app.get("/", async (req, res) => {
     const filteredGames = cachedGames.filter(game =>
         game.name.toLowerCase().includes(searchQuery)
     );
-
     const totalGames = filteredGames.length;
     const allPages = Math.ceil(totalGames / pageSize);
     const start = (page - 1) * pageSize;
     const paginatedGames = filteredGames.slice(start, start + pageSize);
-
+    const priceCache = await fetchPricesForGames(paginatedGames);
+    
+    const gamesWithPrices = paginatedGames.map(game => ({
+       ...game,
+       price: priceCache[game.appid]?.price || 'N/A'
+   }));
     res.render('home', {
-        games: paginatedGames,
+        games: gamesWithPrices,
         currentPage: page,
         totalPages: allPages,
         searchQuery: searchQuery || null,
