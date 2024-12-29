@@ -14,7 +14,14 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 
-app.use(express.static(path.join(__dirname, '/public')));
+
+app.use(express.static(path.join(__dirname, '/public'), {
+    maxAge: '182500d', // Cache for 500 years
+    setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', 'public, max-age=182500, must-revalidate');
+    },
+}));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression()); // Enable Gzip compression
 
@@ -33,6 +40,10 @@ const loadGameData = async () => {
 
 const saveGameData = async (data) => {
     await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    console.log(`Saving (AppId and Names) to ${DATA_FILE}`);
+    console.log('PLEASE RELOAD AGAIN TO GENERATE PRICES');
+    
+    
 };
 
 
@@ -49,6 +60,7 @@ const loadPriceCache = async () => {
 // Save price cache
 const savePriceCache = async (data) => {
     await fs.writeFile(PRICES_CACHE_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    console.log(`Saving PRICES to ${PRICES_CACHE_FILE}`);
 };
 
 // Fetch prices for a batch of games
@@ -95,7 +107,7 @@ const fetchPricesForGames = async (games) => {
 
 app.get("/", async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = 30;
+    const pageSize = 25;
     const searchQuery = req.query.search?.trim().toLowerCase() || '';
     
     let cachedGames = await loadGameData();
@@ -155,6 +167,8 @@ const loadGameDetailsCache = async () => {
 // Utility function to save cached game details
 const saveGameDetailsCache = async (cache) => {
     await fs.writeFile(GAME_DETAILS_CACHE, JSON.stringify(cache, null, 2), 'utf-8');
+    console.log(`Saving GAME DETAILS to ${GAME_DETAILS_CACHE}`);
+
 };
 
 app.get('/game/:id', async (req, res) => {
@@ -217,4 +231,4 @@ app.get('/game/:id', async (req, res) => {
 });
 
 
-app.listen(port, () => console.log(`Server is running on port: ${port}`));
+app.listen(port, () => console.log(`Server is running at localhost:${port}`));
