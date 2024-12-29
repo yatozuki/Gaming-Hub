@@ -1,14 +1,42 @@
-.card {
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.6);
+.card, .screen-card, .cover-card, .left-cover-card, .right-cover-card {
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.7);
     transition: all ease 0.3s;
 }
 
-.card:hover {
+.card:hover, .screen-card:hover {
     transform: translate3d(0, -10px, -10px);
-    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.65);
+    box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.75);
 }
 
-.card-body {
-    background-color: #31363F;
-
+.left-cover-card:hover, .right-cover-card:hover {
+    transform: translate3d(0, 10px, 10px);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.65)
 }
+
+.card-bg {
+    background-color: #373A40;
+}
+
+#screenshot {
+    max-width: 1280px;
+    max-height: 720px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.screen-card, img.d-block {
+    width: 100%;
+    height: 100%;
+}
+
+img.d-block {
+    object-fit: cover;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.right-side {
+    max-width: 500px;
+    margin: 0 auto;
+}
+

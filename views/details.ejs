@@ -2,59 +2,93 @@
 
 <%- include('partials/navbar.ejs') %>
 
-<div class="container">
-  <!-- Cover Photo
-  <div class="cover"
-    style="background-image: url('https://cdn.cloudflare.steamstatic.com/steam/apps/  appid  /header.jpg');">
-  </div> -->
-
+<div class="container-fluid ">
   <!-- Game Details -->
-  <h1><%= name %></h1>
-  <div class="info">
-    <p><strong>Genre:</strong> <%= genre %></p>
-    <p><strong>Description:</strong> <%= description %></p>
-    <p><strong>Price:</strong> <%= price %></p>
-    <p><strong>Release Date:</strong> <%= release_date %></p>
-    <p><strong>Supported Platforms:</strong> <%= platforms.join(', ') %></p>
-    <p><strong>Publisher:</strong> <%= publisher %></p>
-    <p><strong>Developer:</strong> <%= developer %></p>
-    <p><strong>App ID:</strong> <%= appid %></p>
+  <h1 class="fw-bold text-center my-5"><%= name %></h1>
 
-  </div>
+  <div class="d-inline-flex flex-row mx-2 container-fluid">
+    <div class="me-3 container card-bg rounded-4 left-cover-card">
+      <div id="screenshot" class="container-fluid carousel slide carousel-fade w-100" data-bs-ride="carousel">
+        <div class="rounded-4 carousel-inner">
+          <% if (screenshots.length > 0) { %>
+          <% screenshots.forEach(screenshot => { %>
+          <div class="carousel-item <%= screenshot.index === 0 ? 'active' : '' %>" data-bs-interval="2000">
+            <a target="_blank" href="<%= screenshot.url %>"">
+              <img src=" <%= screenshot.url %>" class="rounded-4 d-bloc w-100" alt="Screenshot">
+            </a>
+          </div>
+          <% }) %>
+          <button class="carousel-control-prev" type="button" data-bs-target="#screenshot" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#screenshot" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          <% } else { %>
+            <div class="text-center fw-bold fs-3 mb-5 my-auto">
+              <p class="mt-4">No screenshots available for this game.</p>
+              <img src="https://via.placeholder.com/1280x600?text=No+Image" alt="No image">
+            </div>
 
-  <!-- Screenshots -->
-  <h2>Screenshots</h2>
-  <div class="screenshots">
-    <% if (screenshots && screenshots.length > 0) { %>
-    <% screenshots.forEach(screenshot => { %>
-    <img src="<%= screenshot %>" alt="Screenshot" width="300">
-    <% }) %>
-    <% } else { %>
-    <p>No screenshots available for this game.</p>
-    <% } %>
-  </div>
-
-  <div>
-    <% if (videos.length > 0) { %>
-    <% videos.forEach(video => { %>
-    <div class="video">
-      <% if (video.webm) { %>
-      <video controls>
-        <source src="<%= video.webm %>" type="video/webm">
-        Your browser does not support the video tag.
-      </video>
-      <% } else { %>
-      <video controls>
-        <source src="<%= video.mp4 %>" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <% } %>
+          <% } %>
+        </div>
+      </div>
     </div>
-    <% }) %>
+
+    <div class="card-bg rounded-4 right-cover-card right-side container-fluid">
+      <div class="rounded-4 mt-3 d-flex justify-content-center align-items-center">
+        <img class="rounded-4 cover-card d-flex justify-content-center align-items-center"
+        src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= appid %>/header.jpg" alt="<%= appid %>">
+      </div>
+
+
+      <div class="mx-3 mt-5 info">
+        <p class=""><strong>Description:</strong> <%= description %></p>
+        <p><strong>Release Date:</strong> <%= release_date %></p>
+        <p><strong>Genre:</strong> <%= genre %></p>
+        <p><strong>Supported Platforms:</strong> <%= platforms.join(', ') %></p>
+        <p><strong>Developer:</strong> <%= developer %></p>
+        <p><strong>Publisher:</strong> <%= publisher %></p>
+        <p><strong>App ID:</strong> <%= appid %></p>
+        <p><strong>Price:</strong> <%= price %></p>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5 container-fluid">
+    <% if (videos.length > 0) { %>
+    <div class="row">
+      <% videos.forEach(video => { %>
+
+      <div class="col-4 d-flex justify-content-center align-items-center mb-5">
+        <% if (video.webm) { %>
+        <video class="rounded-4 screen-card w-100" controls>
+          <source src="<%= video.webm %>" type="video/webm">
+          Your browser does not support the video tag.
+        </video>
+        <% } else { %>
+        <video controls>
+          <source class="rounded-4 screen-card" src="<%= video.mp4 %>" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <% } %>
+      </div>
+      <% }) %>
+    </div>
+
     <% } else { %>
-    <p>No videos available for this game.</p>
+      <div class="text-center fw-bold fs-3 mb-5">
+        <p>No videos available for this game.</p>
+      </div>
     <% } %>
   </div>
+
 </div>
+
+
+
 
 <%- include('partials/footer.ejs') %>

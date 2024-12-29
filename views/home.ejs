@@ -6,15 +6,15 @@
         <% games.forEach(game => { %>
         <div class="col d-flex justify-content-center">
             <a href="/game/<%= game.appid %>" class="text-decoration-none">
-                <div class="card my-auto" style="width: 20rem;">
-                    <div class="game">
+                <div class="rounded-3 card my-auto" style="width: 20rem;">
+                    <div class="rounded-4 game">
 
                         <img class="card-img-top"
                             src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= game.appid %>/header.jpg"
                             alt="<%= game.name %>"
                             onerror="this.src='https://via.placeholder.com/200x93?text=No+Image';">
 
-                        <div class="card-body">
+                        <div class="card-body card-bg rounded-3">
                             <p class="card-text fw-bold text-center"><%= game.name %></p>
                             <hr>
                             <p class="card-text text-center fw-bold"><%= game.price %></p>
