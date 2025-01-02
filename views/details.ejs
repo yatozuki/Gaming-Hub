@@ -10,11 +10,26 @@
     <div class="me-3 container card-bg rounded-4 left-cover-card">
       <div id="screenshot" class="container-fluid carousel slide carousel-fade w-100" data-bs-ride="carousel">
         <div class="rounded-4 carousel-inner">
-          <% if (screenshots.length > 0) { %>
+          <% if (screenshots.length < 0) { %>
+          <div class="carousel-item active text-center fw-bold fs-3 mb-5 my-auto">
+            <p class="mt-4">No screenshots available for this game.</p>
+            <img src="https://via.placeholder.com/1280x600?text=No+Image" alt="No image">
+          </div>
+
+          <% } else if (screenshots.length === 1 ) { %>
+          <% screenshots.forEach(screenshot => { %>
+          <div class="carousel-item active">
+            <a target="_blank" href="<%= screenshot.url %>"">
+              <img src=" <%= screenshot.url %>" class="rounded-4 d-bloc w-100" alt="Screenshot">
+            </a>
+          </div>
+          <% }) %>
+
+          <% } else { %>
           <% screenshots.forEach(screenshot => { %>
           <div class="carousel-item <%= screenshot.index === 0 ? 'active' : '' %>" data-bs-interval="2000">
             <a target="_blank" href="<%= screenshot.url %>"">
-              <img src=" <%= screenshot.url %>" class="rounded-4 d-bloc w-100" alt="Screenshot">
+                <img src=" <%= screenshot.url %>" class="rounded-4 d-bloc w-100" alt="Screenshot">
             </a>
           </div>
           <% }) %>
@@ -26,12 +41,6 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
-          <% } else { %>
-            <div class="text-center fw-bold fs-3 mb-5 my-auto">
-              <p class="mt-4">No screenshots available for this game.</p>
-              <img src="https://via.placeholder.com/1280x600?text=No+Image" alt="No image">
-            </div>
-
           <% } %>
         </div>
       </div>
@@ -40,7 +49,7 @@
     <div class="card-bg rounded-4 right-cover-card right-side container-fluid">
       <div class="rounded-4 mt-3 d-flex justify-content-center align-items-center">
         <img class="rounded-4 cover-card d-flex justify-content-center align-items-center"
-        src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= appid %>/header.jpg" alt="<%= appid %>">
+          src="https://cdn.cloudflare.steamstatic.com/steam/apps/<%= appid %>/header.jpg" alt="<%= appid %>">
       </div>
 
 
@@ -52,9 +61,9 @@
         <p><strong>Developer:</strong> <%= developer %></p>
         <p><strong>Publisher:</strong> <%= publisher %></p>
         <p><strong>App ID:</strong> <%= appid %></p>
-        <p><strong>Price:</strong> <%= price %></p>
-
+        <p><strong>Current Price:</strong> <%= price %></p>
       </div>
+
     </div>
   </div>
 
@@ -80,9 +89,9 @@
     </div>
 
     <% } else { %>
-      <div class="text-center fw-bold fs-3 mb-5">
-        <p>No videos available for this game.</p>
-      </div>
+    <div class="text-center fw-bold fs-3 mb-5">
+      <p>No videos available for this game.</p>
+    </div>
     <% } %>
   </div>
 

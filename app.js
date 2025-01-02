@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import axios from 'axios';
 import path from 'node:path';
 import {
@@ -27,9 +26,6 @@ app.use(express.static(path.join(__dirname, '/public'), {
     },
 }));
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
 app.use(compression()); // Enable Gzip compression
 
 
